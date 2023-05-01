@@ -1,0 +1,24 @@
+#!/bin/sh
+TMP=/var/log/setup/tmp
+if [ ! -d $TMP ]; then
+  mkdir -p $TMP
+fi
+T_PX="`cat $TMP/SeTT_PX`"
+while true; do
+  dialog --backtitle "User Create Poison Linux" --title "USER CREATE" --yesno "Create a user to login to the system?" 5 68
+  if [ $? = 0 ] ; then
+    echo
+    echo
+    echo
+    chroot $T_PX adduser
+    echo
+    echo -n "Press [enter] to continue:"
+    read junk;
+    echo
+    # Here we drop through, and if there's still no password the menu
+    # runs again.
+  else
+    # Don't set a password:
+    break;
+  fi
+done
