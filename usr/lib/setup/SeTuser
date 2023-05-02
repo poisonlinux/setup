@@ -1,24 +1,45 @@
-#!/bin/sh
+#!/bin/bash
+#################################################################################
+# License: MIT
+#
+# Copyright 2023 Slackjeff (slackjeff@riseup.net)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+# DESC: Create additional user to poison linux.
+#################################################################################
 TMP=/var/log/setup/tmp
 if [ ! -d $TMP ]; then
   mkdir -p $TMP
 fi
+
 T_PX="`cat $TMP/SeTT_PX`"
+
+dialog --backtitle "Create User" --title "Create additional User" --yesno "Create a user to login to the system?" 5 68
+if [ $? != 0 ] ; then
+    exit
+fi
+
 while true; do
-  dialog --backtitle "User Create Poison Linux" --title "USER CREATE" --yesno "Create a user to login to the system?" 5 68
-  if [ $? = 0 ] ; then
-    echo
-    echo
-    echo
     chroot $T_PX adduser
-    echo
-    echo -n "Press [enter] to continue:"
-    read junk;
-    echo
-    # Here we drop through, and if there's still no password the menu
-    # runs again.
-  else
-    # Don't set a password:
-    break;
-  fi
+    dialog --backtitle "Create User" --title "Create additional User" --yesno "Do you want to create another additional user?" 5 50
+    if [ $? != 0 ]; then
+        break
+    fi
 done
